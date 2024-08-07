@@ -108,31 +108,27 @@ TWEAKS = {
   }
 }
 
-result = run_flow_from_json(flow="trungnguyen.json",
-                            input_value="message",
-                            fallback_to_env_vars=True, # False by default
-                            tweaks=TWEAKS)
-
 if 'history' not in st.session_state:
     st.session_state.history = []
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = []
 if 'chat_input' not in st.session_state:
     st.session_state["chat_input"] = ""   
-st.write(st.session_state) 
+ 
 # Streamlit interface
 st.title("Chatbot")
 def chat_actions():
+    input = st.session_state["chat_input"]
     st.session_state["chat_history"].append(
-        {"role": "user", "content": st.session_state["chat_input"]},
+        {"role": "user", "content": input},
     )
     # Update input_value in TWEAKS with user_input
-    TWEAKS["ChatInput-GtLBM"]["input_value"] = st.session_state["chat_input"]
+    TWEAKS["ChatInput-GtLBM"]["input_value"] = input
 
     # Run flow with user input
     result = run_flow_from_json(
         flow=flow_path,
-        input_value=st.session_state["chat_input"],
+        input_value=input,
         fallback_to_env_vars=True,
         tweaks=TWEAKS
     )
@@ -144,7 +140,7 @@ def chat_actions():
             "content": res,
         }
     )
-    add_message(st.session_state["chat_input"], res)
+    add_message(input, res)
     # Display images if any
     img_urls = extract_urls(res)
     if img_urls:
