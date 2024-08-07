@@ -12,7 +12,7 @@ flow_path = "trungnguyen.json"
 TWEAKS = {
   "ChatInput-GtLBM": {
     "files": "",
-    "input_value": "giới thiệu loại đầu tiên bạn đã nói",
+    "input_value": "",
     "sender": "User",
     "sender_name": "Customer",
     "session_id": "blah",
@@ -113,27 +113,19 @@ result = run_flow_from_json(flow="trungnguyen.json",
                             fallback_to_env_vars=True, # False by default
                             tweaks=TWEAKS)
 
-# Streamlit interface
-st.title("Chatbot")
-
 if 'history' not in st.session_state:
     st.session_state.history = []
-
-def add_message(user_message, bot_response):
-    st.session_state.history.append({'user': user_message, 'bot': bot_response})
-
-def display_history():
-    for chat in st.session_state.history:
-        with st.chat_message("user"):
-            st.write(chat['user'])
-        with st.chat_message("Chatbot"):
-            st.write(chat['bot'])
-
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
+if 'chat_input' not in st.session_state:
+    st.session_state["chat_input"] = ""   
+st.write(st.session_state) 
+# Streamlit interface
+st.title("Chatbot")
 def chat_actions():
     st.session_state["chat_history"].append(
         {"role": "user", "content": st.session_state["chat_input"]},
     )
-    st.write(st.session_state["chat_input"])
     # Update input_value in TWEAKS with user_input
     TWEAKS["ChatInput-GtLBM"]["input_value"] = st.session_state["chat_input"]
 
@@ -165,18 +157,26 @@ def chat_actions():
         if image_html:
             st.markdown(
                 f"""
-                <div style="position: fixed; right: 0; top: 0; width: 300px; background-color: white; padding: 10px; box-shadow: -2px 0 5px rgba(0,0,0,0.1); overflow-y: auto; max-height: 100%;">
+                <div style="position: fixed; right: 5%; bottom: 10%; width: 300px; background-color: white; padding: 10px; box-shadow: -2px 0 5px rgba(0,0,0,0.1); overflow-y: auto; max-height: 100%;">
                     {image_html}
                 </div>
                 """,
                 unsafe_allow_html=True
             )
+def add_message(user_message, bot_response): 
+    st.session_state.history.append({'user': user_message, 'bot': bot_response})
+def display_history():
+    for chat in st.session_state.history:
+        with st.chat_message("user"):
+            st.write(chat['user'])
+        with st.chat_message("Chatbot"):
+            st.write(chat['bot'])
+# Chat input and submit button
+user_input = st.chat_input("Enter your message")
 
-if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = []
-
-# Input box
-st.chat_input("Enter your message", on_submit=chat_actions(), key="chat_input")
+if user_input:
+    st.session_state["chat_input"] = user_input
+    chat_actions() 
 # Checkbox to show/hide chat history as JSON
 if st.checkbox("Show History as JSON"):
     st.json(st.session_state["chat_history"])
