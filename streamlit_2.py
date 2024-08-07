@@ -177,14 +177,6 @@ if "chat_history" not in st.session_state:
 
 # Input box
 st.chat_input("Enter your message", on_submit=chat_actions(), key="chat_input")
-
-    # st.write("Chatbot trả lời:")
-    # dict_res = result[0].model_dump()
-    # res = dict_res["outputs"][0]["results"]["message"]["data"]["text"]
-    # st.write(res)
-    
-    # # Add message to history
-    
 # Checkbox to show/hide chat history as JSON
 if st.checkbox("Show History as JSON"):
     st.json(st.session_state["chat_history"])
