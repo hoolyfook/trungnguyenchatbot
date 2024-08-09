@@ -15,7 +15,17 @@ ASTRA_DB_API_ENDPOINT = os.getenv('ASTRA_DB_API_ENDPOINT')
 ASTRA_DB_APPLICATION_TOKEN = os.getenv('ASTRA_DB_APPLICATION_TOKEN')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 st.title("Trung Nguyen Legend Coffee")
-
+#st.sidebar.image("https://trungnguyenlegend.com/wp-content/uploads/2018/04/tnl.png", use_column_width=True)
+st.markdown(
+    """
+    <div style="position: fixed; top: 12%; left: 0;width: 30%;">
+        <img src="https://trungnguyenlegend.com/wp-content/uploads/2018/04/tnl.png" 
+             alt="logo" 
+             style="width: 500px; height: auto;">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 data_client = DataAPIClient(ASTRA_DB_APPLICATION_TOKEN)
 db = data_client.get_database_by_api_endpoint(ASTRA_DB_API_ENDPOINT)
